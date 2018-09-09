@@ -47,7 +47,7 @@
             <ListView x:Name="Image_List" ItemsSource="{Binding Image_Urls}" ItemContainerStyle ="{StaticResource itemstyle}">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <local:WrapPanelWithRowsOrColumnsCount RowsOrColumnsCount="2" Orientation="Vertical"/>
+                        <local:WaterfallPanel RowsOrColumnsCount="2" Orientation="Vertical"/>
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>

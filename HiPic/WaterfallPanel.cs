@@ -6,13 +6,13 @@ using System.Windows.Controls;
 
 namespace HiPic
 {
-    public class WrapPanelWithRowsOrColumnsCount : WrapPanel
+    public class WaterfallPanel : WrapPanel
     {
         public static readonly DependencyProperty RowsOrColumnsCountProperty =
             DependencyProperty.Register(
                 "RowsOrColumnsCount",
                 typeof(int),
-                typeof(WrapPanelWithRowsOrColumnsCount),
+                typeof(WaterfallPanel),
                 new PropertyMetadata(int.MaxValue));
 
         public int RowsOrColumnsCount

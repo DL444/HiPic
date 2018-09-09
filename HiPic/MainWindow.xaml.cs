@@ -31,7 +31,7 @@ namespace HiPic
             InitializeComponent();
             vm = this.DataContext as WindowViewModel;
             this.ShowInTaskbar = false;
-            foreWindow = Hotkey.GetForegroundWindow();
+            foreWindow = WinApi.GetForegroundWindow();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -56,13 +56,13 @@ namespace HiPic
 
         private void OnHotkey()
         {
-            foreWindow = Hotkey.GetForegroundWindow();
+            foreWindow = WinApi.GetForegroundWindow();
             if (!this.IsVisible)
             {
                 this.Show();
                 this.Activate();
             }
-            Hotkey.GetCursorPos(out Hotkey.POINT mouse_point);
+            WinApi.GetCursorPos(out WinApi.POINT mouse_point);
             PresentationSource source = PresentationSource.FromVisual(this);
             this.Left = mouse_point.X / source.CompositionTarget.TransformToDevice.M11;
             this.Top = mouse_point.Y / source.CompositionTarget.TransformToDevice.M22;
@@ -84,12 +84,12 @@ namespace HiPic
             bmp.Freeze();
             Clipboard.SetImage(bmp);
             this.Hide();
-            Hotkey.SetForegroundWindow(foreWindow);
-            Hotkey.keybd_event(17, 0, 0, 0);
-            Hotkey.keybd_event(86, 0, 0, 0);
+            WinApi.SetForegroundWindow(foreWindow);
+            WinApi.keybd_event(17, 0, 0, 0);
+            WinApi.keybd_event(86, 0, 0, 0);
             Thread.Sleep(10);
-            Hotkey.keybd_event(86, 0, 2, 0);
-            Hotkey.keybd_event(17, 0, 2, 0);
+            WinApi.keybd_event(86, 0, 2, 0);
+            WinApi.keybd_event(17, 0, 2, 0);
             vm.Keyword = "";
             vm.Image_Urls.Clear();
         }

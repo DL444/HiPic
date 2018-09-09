@@ -12,27 +12,6 @@ namespace HiPic
 {
     static class Hotkey
     {
-        #region 系统api
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool RegisterHotKey(IntPtr hWnd, int id, HotkeyModifiers fsModifiers, uint vk);
-
-        [DllImport("user32.dll")]
-        static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool GetCursorPos(out POINT pt);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll", EntryPoint = "keybd_event", SetLastError = true)]
-        public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
-        #endregion
-
         /// <summary>
         /// 注册快捷键
         /// </summary>
@@ -49,7 +28,7 @@ namespace HiPic
             int id = keyid++;
 
             var vk = KeyInterop.VirtualKeyFromKey(key);
-            if (!RegisterHotKey(hwnd, id, fsModifiers, (uint)vk))
+            if (!WinApi.RegisterHotKey(hwnd, id, fsModifiers, (uint)vk))
                 throw new Exception("regist hotkey fail.");
             keymap[id] = callBack;
         }
@@ -80,25 +59,13 @@ namespace HiPic
             foreach (KeyValuePair<int, HotKeyCallBackHanlder> var in keymap)
             {
                 if (var.Value == callBack)
-                    UnregisterHotKey(hWnd, var.Key);
+                    WinApi.UnregisterHotKey(hWnd, var.Key);
             }
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct POINT
-        {
-            public int X;
-            public int Y;
-
-            public POINT(int x, int y)
-            {
-                this.X = x;
-                this.Y = y;
-            }
-        }
-
+        
         const int WM_HOTKEY = 0x312;
         static int keyid = 10;
+
         static Dictionary<int, HotKeyCallBackHanlder> keymap = new Dictionary<int, HotKeyCallBackHanlder>();
 
         public delegate void HotKeyCallBackHanlder();
