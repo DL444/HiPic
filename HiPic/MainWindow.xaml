@@ -3,10 +3,70 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:HiPic"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Image" Height="400" Width="251" WindowStyle="None" ResizeMode="NoResize"
+        Loaded="Window_Loaded" Closed="Window_Closed"
+        BorderThickness="1"
+        Deactivated="Window_Deactivated" Icon="icon.ico">
+    <Window.DataContext>
+        <local:WindowViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <ToolTip x:Key="InforTip">
+            <Image Source="{Binding Image_Url}"/>
+        </ToolTip>
+        <Style x:Key="itemstyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+            <Setter Property="ToolTip" Value="{Binding Source={StaticResource InforTip}}"/>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="KeywordBox" Text="{Binding Keyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="4"/>
+            <Button x:Name="ActionBtn" Grid.Column="1" Margin="4" Width="20" Click="ActionBtn_Click">
+                <Button.Content>
+                    <TextBlock Text="..."/>
+                </Button.Content>
+            </Button>
+
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="4">
+            <ListView x:Name="Image_List" ItemsSource="{Binding Image_Urls}" ItemContainerStyle ="{StaticResource itemstyle}">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <local:WrapPanelWithRowsOrColumnsCount RowsOrColumnsCount="2" Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding Image_Url}" Width="100" Height="auto"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        <tb:TaskbarIcon x:Name="TbIcon" IconSource="icon.ico" ToolTipText="HiPic">
+            <tb:TaskbarIcon.TrayPopup>
+                <Grid Width="50" Height="20">
+                    <Button Click="Button_Click" Width="auto" Height="auto">
+                        <Button.Content>
+                            <TextBlock Text="Close"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+            </tb:TaskbarIcon.TrayPopup>
+        </tb:TaskbarIcon>
     </Grid>
 </Window>
