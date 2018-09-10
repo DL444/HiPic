@@ -9,7 +9,7 @@ namespace HiPic
 {
     class WinApi
     {
-        #region 系统api
+        #region WindowsApi
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, HotkeyModifiers fsModifiers, uint vk);
@@ -26,8 +26,11 @@ namespace HiPic
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        [DllImport("user32.dll", EntryPoint = "keybd_event", SetLastError = true)]
-        public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+        //[DllImport("user32.dll", EntryPoint = "keybd_event", SetLastError = true)]
+        //public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+
+        [DllImport("user32.dll", EntryPoint = "SendMessage")]
+        public static extern int SendMessage(IntPtr hwnd, WM wMsg, IntPtr wParam, IntPtr lParam);
         #endregion
 
         [StructLayout(LayoutKind.Sequential)]
@@ -42,5 +45,14 @@ namespace HiPic
                 this.Y = y;
             }
         }
+    }
+
+    enum WM
+    {
+        WM_CUT = 0x300,
+        WM_COPY = 0x0301,
+        WM_PASTE = 0x0302,
+        WM_KEYDOWN = 0X100,
+        WM_KEYUP = 0x101
     }
 }

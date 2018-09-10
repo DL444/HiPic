@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HiPic
 {
@@ -85,11 +75,7 @@ namespace HiPic
             Clipboard.SetImage(bmp);
             this.Hide();
             WinApi.SetForegroundWindow(foreWindow);
-            WinApi.keybd_event(17, 0, 0, 0);
-            WinApi.keybd_event(86, 0, 0, 0);
-            Thread.Sleep(10);
-            WinApi.keybd_event(86, 0, 2, 0);
-            WinApi.keybd_event(17, 0, 2, 0);
+            WinApi.SendMessage(foreWindow, WM.WM_PASTE, IntPtr.Zero, IntPtr.Zero);
             vm.Keyword = "";
             vm.Image_Urls.Clear();
         }
@@ -112,14 +98,15 @@ namespace HiPic
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.Hide();
+            TbIcon.ShowBalloonTip("Tips", "Press Alt + ~ to show the window.", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            TbIcon.Visibility = System.Windows.Visibility.Hidden;
+            TbIcon.Dispose();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Exit_Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }

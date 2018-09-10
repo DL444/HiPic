@@ -6,10 +6,9 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:HiPic"
         mc:Ignorable="d"
-        Title="Image" Height="400" Width="251" WindowStyle="None" ResizeMode="NoResize"
-        Loaded="Window_Loaded" Closed="Window_Closed"
-        BorderThickness="1"
-        Deactivated="Window_Deactivated" Icon="icon.ico">
+        Title="HiPic" Height="400" Width="251" WindowStyle="None" ResizeMode="NoResize"
+        BorderThickness="1" Icon="icon.ico"
+        Loaded="Window_Loaded" Closed="Window_Closed" Deactivated="Window_Deactivated">
     <Window.DataContext>
         <local:WindowViewModel/>
     </Window.DataContext>
@@ -35,7 +34,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBox x:Name="KeywordBox" Text="{Binding Keyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="4"/>
-            <Button x:Name="ActionBtn" Grid.Column="1" Margin="4" Width="20" Click="ActionBtn_Click">
+            <Button x:Name="ActionBtn" Grid.Column="1" Margin="4" Width="20" Click="ActionBtn_Click" IsDefault="True">
                 <Button.Content>
                     <TextBlock Text="..."/>
                 </Button.Content>
@@ -58,15 +57,11 @@
             </ListView>
         </Grid>
         <tb:TaskbarIcon x:Name="TbIcon" IconSource="icon.ico" ToolTipText="HiPic">
-            <tb:TaskbarIcon.TrayPopup>
-                <Grid Width="50" Height="20">
-                    <Button Click="Button_Click" Width="auto" Height="auto">
-                        <Button.Content>
-                            <TextBlock Text="Close"/>
-                        </Button.Content>
-                    </Button>
-                </Grid>
-            </tb:TaskbarIcon.TrayPopup>
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Exit" Click="Exit_Button_Click"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
     </Grid>
 </Window>
