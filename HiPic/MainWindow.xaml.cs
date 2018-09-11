@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -33,15 +34,27 @@ namespace HiPic
             });
         }
 
-        private void ActionBtn_Click(object sender, RoutedEventArgs e)
+        private async void ActionBtn_Click(object sender, RoutedEventArgs e)
         {
+            ActionBtn.IsEnabled = false;
             vm.Image_Urls.Clear();
             PicFinder finder = new PicFinder();
 
-            foreach (string str in finder.GetImages(vm.Keyword))
+            List<string> images = null;
+            try
+            {
+                images = await finder.GetImages(vm.Keyword);
+            }
+            catch(System.Net.Http.HttpRequestException)
+            {
+                ActionBtn.IsEnabled = true;
+                images = new List<string>();
+            }
+            foreach (string str in images)
             {
                 vm.Image_Urls.Add(new ViewModel() { Image_Url = str });
             }
+            ActionBtn.IsEnabled = true;
         }
 
         private void OnHotkey()
@@ -109,6 +122,14 @@ namespace HiPic
         private void Exit_Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void KeywordBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                ActionBtn_Click(this, null);
+            }
         }
     }
 }
