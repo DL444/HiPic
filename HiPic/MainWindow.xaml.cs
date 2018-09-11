@@ -13,7 +13,7 @@ namespace HiPic
     /// </summary>
     public partial class MainWindow : Window
     {
-        WindowViewModel vm = null;
+        WindowViewModel vm;
         IntPtr foreWindow;
         BitmapImage bmp;
 
