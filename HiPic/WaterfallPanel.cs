@@ -146,10 +146,10 @@ namespace HiPic
 
             var length = trueRowsFalseColumns ? next.Width : next.Height;
 
-            if (Double.IsInfinity(length) ||
-                Double.IsNaN(length))
+            if (double.IsInfinity(length) ||
+                double.IsNaN(length))
             {
-                return Double.NaN;
+                return double.NaN;
             }
             else
             {

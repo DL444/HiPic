@@ -8,11 +8,6 @@ using System.Threading.Tasks;
 
 namespace HiPic
 {
-    static class Rand
-    {
-        public static Random rand = new Random(DateTime.Now.Millisecond);
-    }
-
     class Model
     {
         public string Image_Url { get; set; }
@@ -28,7 +23,7 @@ namespace HiPic
             set
             {
                 model.Image_Url = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Image_Url)));
             }
         }
 
@@ -45,7 +40,7 @@ namespace HiPic
             set
             {
                 _keyword = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Keyword"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Keyword)));
             }
         }
 

@@ -34,10 +34,14 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="KeywordBox" Text="{Binding Keyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="4"/>
+            <TextBox x:Name="KeywordBox" Text="{Binding Keyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="4" KeyDown="KeywordBox_KeyDown"/>
             <Button x:Name="ActionBtn" Grid.Column="1" Margin="4" Width="20" Click="ActionBtn_Click">
                 <Button.Content>
-                    <TextBlock Text="..."/>
+                    <Canvas Width="10" Height="10">
+                        <Path Data="M 0,10 L 4,6 " Stroke="Black"/>
+                        <Ellipse Width="7" Height="7" Fill="Transparent" Stroke="Black" Margin="2,0.5,0,1.5"/>
+                    </Canvas>
+                    <!--<TextBlock Text="..."/>-->
                 </Button.Content>
             </Button>
 
@@ -58,7 +62,12 @@
             </ListView>
         </Grid>
         <tb:TaskbarIcon x:Name="TbIcon" IconSource="icon.ico" ToolTipText="HiPic">
-            <tb:TaskbarIcon.TrayPopup>
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Click="Button_Click" Header="Close"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+            <!--<tb:TaskbarIcon.TrayPopup>
                 <Grid Width="50" Height="20">
                     <Button Click="Button_Click" Width="auto" Height="auto">
                         <Button.Content>
@@ -66,7 +75,7 @@
                         </Button.Content>
                     </Button>
                 </Grid>
-            </tb:TaskbarIcon.TrayPopup>
+            </tb:TaskbarIcon.TrayPopup>-->
         </tb:TaskbarIcon>
     </Grid>
 </Window>
