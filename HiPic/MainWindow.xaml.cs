@@ -45,7 +45,7 @@ namespace HiPic
             {
                 images = await finder.GetImages(vm.Keyword);
             }
-            catch(System.Net.Http.HttpRequestException)
+            catch(System.Net.WebException)
             {
                 ActionBtn.IsEnabled = true;
                 images = new List<string>();

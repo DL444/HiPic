@@ -17,6 +17,17 @@
             <Image Source="{Binding Image_Url}"/>
         </ToolTip>
         <Style x:Key="itemstyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu>
+                        <MenuItem Header="Favorite">
+                            <MenuItem.Icon>
+                                <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="Star-01.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
             <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
             <Setter Property="ToolTip" Value="{Binding Source={StaticResource InforTip}}"/>
         </Style>

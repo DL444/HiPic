@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace HiPic
 {
@@ -56,5 +57,10 @@ namespace HiPic
         //}
 
         public event PropertyChangedEventHandler PropertyChanged;
+    }
+
+    static class FavoritesViewModel
+    {
+        public static ObservableCollection<ViewModel> ImageUrls { get; } = new ObservableCollection<ViewModel>();
     }
 }
