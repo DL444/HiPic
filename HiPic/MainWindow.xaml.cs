@@ -17,11 +17,15 @@ namespace HiPic
         IntPtr foreWindow;
         BitmapImage bmp;
 
+        FavoritesViewModel favoVm;
+
         public MainWindow()
         {
             InitializeComponent();
             vm = this.DataContext as WindowViewModel;
-            this.ShowInTaskbar = false;
+            FavoritesPage favoPage = new FavoritesPage();
+            FavoriteFrame.Navigate(favoPage);
+            favoVm = favoPage.DataContext as FavoritesViewModel;
             foreWindow = WinApi.GetForegroundWindow();
         }
 
@@ -45,7 +49,7 @@ namespace HiPic
             {
                 images = await finder.GetImages(vm.Keyword);
             }
-            catch(System.Net.Http.HttpRequestException)
+            catch(System.Net.WebException)
             {
                 ActionBtn.IsEnabled = true;
                 images = new List<string>();
@@ -95,9 +99,14 @@ namespace HiPic
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            InsertImage(new Uri(((ViewModel)Image_List.SelectedItem).Image_Url));
+        }
+
+        public void InsertImage(Uri imageUri)
+        {
             bmp = new BitmapImage();
             bmp.BeginInit();
-            bmp.UriSource = new Uri(((ViewModel)Image_List.SelectedItem).Image_Url);
+            bmp.UriSource = imageUri;
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.EndInit();
             if (bmp.IsDownloading)
@@ -130,6 +139,17 @@ namespace HiPic
             {
                 ActionBtn_Click(this, null);
             }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            favoVm.AddFavorite((sender as System.Windows.Controls.MenuItem).DataContext as ViewModel);
+            favoVm.SerializeJson();
+        }
+
+        public void SetBitmap(BitmapImage image)
+        {
+            bmp = image;
         }
     }
 }
