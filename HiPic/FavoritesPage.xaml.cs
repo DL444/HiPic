@@ -31,7 +31,7 @@ namespace HiPic
 
         private void FavoriteItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            (Application.Current.MainWindow as MainWindow).InsertImage();
+            (Application.Current.MainWindow as MainWindow).InsertImage(new Uri(((ViewModel)ImageList.SelectedItem).Image_Url));
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)

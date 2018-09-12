@@ -99,14 +99,14 @@ namespace HiPic
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            InsertImage();
+            InsertImage(new Uri(((ViewModel)Image_List.SelectedItem).Image_Url));
         }
 
-        public void InsertImage()
+        public void InsertImage(Uri imageUri)
         {
             bmp = new BitmapImage();
             bmp.BeginInit();
-            bmp.UriSource = new Uri(((ViewModel)Image_List.SelectedItem).Image_Url);
+            bmp.UriSource = imageUri;
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.EndInit();
             if (bmp.IsDownloading)
@@ -145,6 +145,11 @@ namespace HiPic
         {
             favoVm.AddFavorite((sender as System.Windows.Controls.MenuItem).DataContext as ViewModel);
             favoVm.SerializeJson();
+        }
+
+        public void SetBitmap(BitmapImage image)
+        {
+            bmp = image;
         }
     }
 }

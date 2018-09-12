@@ -81,7 +81,6 @@ namespace HiPic
         {
             ImageUrls.Clear();
         }
-
     }
 
     static class FavoritesVmSerializer
