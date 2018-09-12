@@ -5,6 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace HiPic
 {
@@ -56,5 +59,54 @@ namespace HiPic
         //}
 
         public event PropertyChangedEventHandler PropertyChanged;
+    }
+
+    class FavoritesViewModel
+    {
+        public ObservableCollection<ViewModel> ImageUrls { get; } = new ObservableCollection<ViewModel>();
+
+        public void AddFavorite(ViewModel imageVm)
+        {
+            if (imageVm == null || ImageUrls.Any(x => x.Image_Url == imageVm.Image_Url))
+            {
+                return;
+            }
+            ImageUrls.Insert(0, imageVm);
+        }
+        public bool RemoveFavorite(ViewModel imageVm)
+        {
+            return ImageUrls.Remove(ImageUrls.FirstOrDefault(x => x.Image_Url == imageVm.Image_Url));
+        }
+        public void ClearFavorite()
+        {
+            ImageUrls.Clear();
+        }
+    }
+
+    static class FavoritesVmSerializer
+    {
+        public static void SerializeJson(this FavoritesViewModel vm)
+        {
+            string jsonString = JsonConvert.SerializeObject(vm);
+            Directory.CreateDirectory(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic");
+            using (StreamWriter file = File.CreateText(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic\\Favorites.json"))
+            {
+                file.Write(jsonString);
+            }
+        }
+
+        public static FavoritesViewModel DeserializeJson()
+        {
+            if (File.Exists(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic\\Favorites.json"))
+            {
+                StreamReader reader = new StreamReader(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic\\Favorites.json");
+                string jsonString = reader.ReadToEnd();
+                return JsonConvert.DeserializeObject<FavoritesViewModel>(jsonString);
+            }
+            else
+            {
+                return new FavoritesViewModel();
+            }
+        }
     }
 }
