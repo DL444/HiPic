@@ -6,9 +6,9 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:HiPic"
         mc:Ignorable="d"
-        Title="HiPic" Height="400" Width="251" WindowStyle="None" ResizeMode="NoResize"
+        Title="HiPic" Height="400" Width="550" WindowStyle="None" ResizeMode="NoResize"
         BorderThickness="1" Icon="icon.ico"
-        Loaded="Window_Loaded" Closed="Window_Closed" Deactivated="Window_Deactivated">
+        Loaded="Window_Loaded" Closed="Window_Closed" Deactivated="Window_Deactivated" ShowInTaskbar="False">
     <Window.DataContext>
         <local:WindowViewModel/>
     </Window.DataContext>
@@ -21,6 +21,11 @@
                 <Setter.Value>
                     <ContextMenu>
                         <MenuItem Header="Favorite">
+                            <MenuItem.Style>
+                                <Style TargetType="MenuItem">
+                                    <EventSetter Event="Click" Handler="MenuItem_Click"/>
+                                </Style>
+                            </MenuItem.Style>
                             <MenuItem.Icon>
                                 <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="Star-01.png"/>
                             </MenuItem.Icon>
@@ -37,6 +42,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="280"/>
+        </Grid.ColumnDefinitions>
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -70,6 +79,9 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
+
+        <Frame x:Name="FavoriteFrame" NavigationUIVisibility="Hidden" Grid.Column="1" Grid.RowSpan="2" />
+
         <tb:TaskbarIcon x:Name="TbIcon" IconSource="icon.ico" ToolTipText="HiPic">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>

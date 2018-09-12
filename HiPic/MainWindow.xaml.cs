@@ -13,15 +13,19 @@ namespace HiPic
     /// </summary>
     public partial class MainWindow : Window
     {
-        WindowViewModel vm = null;
+        WindowViewModel vm;
         IntPtr foreWindow;
         BitmapImage bmp;
+
+        FavoritesViewModel favoVm;
 
         public MainWindow()
         {
             InitializeComponent();
             vm = this.DataContext as WindowViewModel;
-            this.ShowInTaskbar = false;
+            FavoritesPage favoPage = new FavoritesPage();
+            FavoriteFrame.Navigate(favoPage);
+            favoVm = favoPage.DataContext as FavoritesViewModel;
             foreWindow = WinApi.GetForegroundWindow();
         }
 
@@ -95,6 +99,11 @@ namespace HiPic
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            InsertImage();
+        }
+
+        public void InsertImage()
+        {
             bmp = new BitmapImage();
             bmp.BeginInit();
             bmp.UriSource = new Uri(((ViewModel)Image_List.SelectedItem).Image_Url);
@@ -130,6 +139,12 @@ namespace HiPic
             {
                 ActionBtn_Click(this, null);
             }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            favoVm.AddFavorite((sender as System.Windows.Controls.MenuItem).DataContext as ViewModel);
+            favoVm.SerializeJson();
         }
     }
 }
