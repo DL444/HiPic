@@ -17,6 +17,8 @@ namespace HiPic
         IntPtr foreWindow;
         BitmapImage bmp;
 
+        HotKeyManager hkmgr;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,10 +30,9 @@ namespace HiPic
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-            Hotkey.Regist(this, HotkeyModifiers.MOD_ALT, Key.OemTilde, () =>
-            {
-                OnHotkey();
-            });
+
+            hkmgr = new HotKeyManager(this);
+            hkmgr.Register(HotKeyModifiers.Alt, Key.OemTilde, this.OnHotkey);
         }
 
         private async void ActionBtn_Click(object sender, RoutedEventArgs e)
