@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace HiPic
 {
+#pragma warning disable CS0649
+
     class PicData
     {
         public int out_id;
@@ -22,47 +23,28 @@ namespace HiPic
         public int status;
         public PicJsonData data;
     }
-    class PicFinder
+
+#pragma warning restore CS0649
+
+    static class PicFinder
     {
-        readonly string apiUrl = "https://www.doutula.com/api/search";
-
-        public PicFinder() { }
-
-        public async Task<string> GetPicJsonString(string keyword, int mime = 0, int pages = 0)
+        public static async Task<string> GetPicJsonString(string apiRoot, string keyword, int mime = 0, int pages = 0)
         {
-            string result = "";
-
-            StringBuilder builder = new StringBuilder();
-            builder.Append(apiUrl);
-            builder.Append("?");
-            builder.Append($"keyword={keyword}");
-            builder.Append($"&mime={mime}");
-            builder.Append($"&pages={pages}");
-
-            HttpWebRequest req = WebRequest.Create(builder.ToString()) as HttpWebRequest;
+            string url = $"{apiRoot}?keyword={keyword}&mime={mime}&pages={pages}";
+            HttpWebRequest req = WebRequest.CreateHttp(url);
 
             HttpWebResponse resp = (HttpWebResponse)await req.GetResponseAsync();
             Stream stream = resp.GetResponseStream();
-            //try
-            //{
-                //获取内容
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    result = reader.ReadToEnd();
-                }
-            //}
-            //finally
-            //{
-            //    stream.Close();
-            //}
-            // StreamReader.Close() already closes the underlying stream. 
-            return result;
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
-        public async Task<List<string>> GetImages(string keyword)
+        public static async Task<List<string>> GetImages(string apiRoot, string keyword)
         {
             List<string> images = new List<string>();
-            string json = await GetPicJsonString(keyword);
+            string json = await GetPicJsonString(apiRoot, keyword);
 
             PicJson picJson = JsonConvert.DeserializeObject<PicJson>(json);
 
