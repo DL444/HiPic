@@ -37,6 +37,7 @@ namespace HiPic
 
             hkmgr = new HotKeyManager(this);
             hkmgr.Register(HotKeyModifiers.Alt, Key.OemTilde, this.OnHotkey);
+            hkmgr.Register(HotKeyModifiers.None, Key.Escape, this.Hide);
         }
 
         private async void ActionBtn_Click(object sender, RoutedEventArgs e)
