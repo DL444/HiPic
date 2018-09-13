@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Newtonsoft.Json;
 using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace HiPic
 {
@@ -54,7 +49,7 @@ namespace HiPic
         //    set
         //    {
         //        _max = value;
-        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Max"));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Max)));
         //    }
         //}
 
@@ -85,11 +80,16 @@ namespace HiPic
 
     static class FavoritesVmSerializer
     {
+        static readonly DirectoryInfo favoriteJsonFileDirectory = new DirectoryInfo
+            (System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic");
+        static readonly FileInfo favoriteJsonFile = new FileInfo
+            (favoriteJsonFileDirectory.FullName + "\\Favorites.json");
+
         public static void SerializeJson(this FavoritesViewModel vm)
         {
             string jsonString = JsonConvert.SerializeObject(vm);
-            Directory.CreateDirectory(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic");
-            using (StreamWriter file = File.CreateText(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic\\Favorites.json"))
+            favoriteJsonFileDirectory.Create();
+            using (StreamWriter file = favoriteJsonFile.CreateText())
             {
                 file.Write(jsonString);
             }
@@ -97,10 +97,13 @@ namespace HiPic
 
         public static FavoritesViewModel DeserializeJson()
         {
-            if (File.Exists(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic\\Favorites.json"))
+            if (favoriteJsonFile.Exists)
             {
-                StreamReader reader = new StreamReader(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + "\\HiPic\\Favorites.json");
-                string jsonString = reader.ReadToEnd();
+                string jsonString;
+                using (StreamReader reader = favoriteJsonFile.OpenText())
+                {
+                    jsonString = reader.ReadToEnd();
+                }
                 return JsonConvert.DeserializeObject<FavoritesViewModel>(jsonString);
             }
             else
