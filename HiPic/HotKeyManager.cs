@@ -12,6 +12,7 @@ namespace HiPic
     sealed class HotKeyManager
     {
         const int WM_HOTKEY = 0x0312;
+        const int ERROR_HOTKEY_NOT_REGISTERED = 0x058B;
 
         /// <summary>
         /// 被管理 Window 的 HWND。
@@ -42,12 +43,13 @@ namespace HiPic
         /// <param name="fsModifiers">指定快捷键的修饰键部分。</param>
         /// <param name="key">指定快捷键的非修饰键部分。</param>
         /// <param name="handler">指定此快捷键按下时应当在 UI 线程上被调用的委托。</param>
+        /// <exception cref="ArgumentNullException">当指定的委托为 null 时抛出。</exception>
         /// <exception cref="InvalidOperationException">当指定的快捷键已被注册时抛出。</exception>
-        /// <exception cref="Exception">当注册快捷键遇到 Windows API 返回错误时抛出。</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">当注册快捷键遇到 Windows API 返回错误时抛出。</exception>
         public void Register(HotKeyModifiers fsModifiers, Key key, Action handler)
         {
             if (handler == null)
-                return;
+                throw new ArgumentNullException(nameof(handler));
 
             int vk = KeyInterop.VirtualKeyFromKey(key);
             int id = GetIDFromKeyCombination(fsModifiers, vk);
@@ -63,8 +65,9 @@ namespace HiPic
 
             if (!WinApi.RegisterHotKey(hwnd, id, fsModifiers, unchecked((uint) vk)))
             {
+                var e = new System.ComponentModel.Win32Exception();
                 handlers.Remove(id);
-                throw new Exception("Failed to register hot key.");
+                throw e;
             }
         }
 
@@ -73,7 +76,8 @@ namespace HiPic
         /// </summary>
         /// <param name="fsModifiers">指定快捷键的修饰键部分。</param>
         /// <param name="key">指定快捷键的非修饰键部分。</param>
-        /// <exception cref="Exception">当注销快捷键遇到错误时抛出。</exception>
+        /// <exception cref="InvalidOperationException">当指定的快捷键未被注册时抛出。</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">当注销快捷键遇到错误时抛出。</exception>
         public void Unregister(HotKeyModifiers fsModifiers, Key key)
         {
             int vk = KeyInterop.VirtualKeyFromKey(key);
@@ -81,8 +85,11 @@ namespace HiPic
 
             if (!WinApi.UnregisterHotKey(hwnd, id))
             {
-                // TODO: Special case for "nonexistent hot key"
-                throw new Exception("Failed to unregister hot key.");
+                var e = new System.ComponentModel.Win32Exception();
+                if (e.NativeErrorCode == ERROR_HOTKEY_NOT_REGISTERED)
+                    throw new InvalidOperationException("This hot key has not been registered.");
+                else
+                    throw e;
             }
             // Since WinAPI succeeds, this cannot fail:
             handlers.Remove(id);
