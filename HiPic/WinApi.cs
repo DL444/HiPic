@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace HiPic
 {
-    class WinApi
+    static class WinApi
     {
         #region WindowsApi
         [DllImport("user32.dll", SetLastError = true)]

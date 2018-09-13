@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -13,21 +11,24 @@ namespace HiPic
     /// </summary>
     public partial class MainWindow : Window
     {
-        WindowViewModel vm;
-        FavoritesViewModel favoVm;
+        const string apiRoot = "https://www.doutula.com/api/search";
+
+        readonly WindowViewModel vm;
+        readonly FavoritesViewModel favoVm;
         
         IntPtr foreWindow;
         BitmapImage bmp;
         
+        // Invariant: this field is only assigned once in OnSourceInitialized
         HotKeyManager hkmgr;
 
         public MainWindow()
         {
             InitializeComponent();
-            vm = this.DataContext as WindowViewModel;
-            FavoritesPage favoPage = new FavoritesPage();
+            vm = (WindowViewModel) this.DataContext;
+            FavoritesPage favoPage = new FavoritesPage(this);
             FavoriteFrame.Navigate(favoPage);
-            favoVm = favoPage.DataContext as FavoritesViewModel;
+            favoVm = (FavoritesViewModel) favoPage.DataContext;
             foreWindow = WinApi.GetForegroundWindow();
         }
 
@@ -44,17 +45,16 @@ namespace HiPic
         {
             ActionBtn.IsEnabled = false;
             vm.Image_Urls.Clear();
-            PicFinder finder = new PicFinder();
 
-            List<string> images = null;
+            List<string> images;
             try
             {
-                images = await finder.GetImages(vm.Keyword);
+                images = await PicFinder.GetImages(apiRoot, vm.Keyword);
             }
             catch(System.Net.WebException)
             {
                 ActionBtn.IsEnabled = true;
-                images = new List<string>();
+                return;
             }
             foreach (string str in images)
             {
@@ -145,7 +145,7 @@ namespace HiPic
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            favoVm.AddFavorite((sender as System.Windows.Controls.MenuItem).DataContext as ViewModel);
+            favoVm.AddFavorite((ViewModel) ((System.Windows.Controls.MenuItem) sender).DataContext);
             favoVm.SerializeJson();
         }
 
